@@ -1,0 +1,23 @@
+{
+  "name": "meghduta.js",
+  "version": "0.0.1",
+  "description": "Distributed Queue and Topic service",
+  "main": "app.js",
+  "scripts": {
+    "test": "jasmine"
+  },
+  "keywords": [
+    "message_queue"
+  ],
+  "author": "Piyush Katariya",
+  "license": "ISC",
+  "dependencies": {
+    "compression": "1.7.1",
+    "connect": "3.6.5",
+    "fn-validator": "1.1.0",
+    "ramda": "0.25.0"
+  },
+  "devDependencies": {
+    "axios": "^0.17.1"
+  }
+}
