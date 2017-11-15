@@ -17,6 +17,9 @@ const Queue = require("./queue")
 const QueuePullSchema = object({
     queue: all([string, minLength(3), maxLength(20)])
 })
+const noMessagesToPull = JSON.stringify({
+    message: "No messages to pull"
+})
 
 function handleQueuePull(request, response) {
     const result = validate(QueuePullSchema, request.body)
@@ -37,7 +40,7 @@ function handleQueuePull(request, response) {
         response.writeHead(400, {
             "Content-Type": "text/plain"
         })
-        response.end("No messages to pull")
+        response.end(noMessagesToPull)
     }
 }
 
