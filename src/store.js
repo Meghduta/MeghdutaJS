@@ -1,5 +1,5 @@
-module.exports = {
-    queues: {
+const queuesMap = {}
 
-    }
+module.exports = {
+    queues: queuesMap
 }

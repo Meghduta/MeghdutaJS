@@ -1,30 +1,32 @@
 const http = require('axios')
 
+const count = 10
 
-for (let i = 0; i < 10000; i++) {
-    setTimeout(function () {
-        const index = i
-        http.post("http://localhost:3000/meghduta/queue/push", {
-            "messages": [{
+async function run() {
+    for (let i = 0; i < count; i++) {
+        try {
+            const pushResponse = await http.post("http://localhost:3000/meghduta/queue/push", {
                 "message": "Hola",
                 "queue": "my_queue"
-            }]
-        })
-        // .then(() => console.log("PUSH success" + index))
-        // .catch(() => console.error("PUSH error"))
+            })
+        } catch (err) {
+            console.error(err)
+        }
+        console.log("PUSH success")
+    }
 
-    }, i * 10)
+    for (let i = 0; i < count; i++) {
+        try {
+            const pullResponse = await http.post("http://localhost:3000/meghduta/queue/pull", {
+                "queue": "my_queue"
+            })
+        } catch (err) {
+            console.error(err)
+        }
+        console.log("PULL success " + (pullResponse.data.message === "Hola"))
+    }
 
-    setTimeout(function () {
-        const index = i
-        http.post("http://localhost:3000/meghduta/queue/pull", {
-            "queues": [{
-                "queue": "my_queue",
-                "count": 1
-            }]
-        })
-        // .then(() => console.log("PULL success" + index))
-        // .catch(() => console.error("PULL error"))
-
-    }, i * 20)
 }
+
+
+run()
