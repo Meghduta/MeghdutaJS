@@ -1,6 +1,6 @@
 const http = require('axios')
 
-const count = 10
+const count = 1000
 
 async function run() {
     for (let i = 0; i < count; i++) {
@@ -16,8 +16,9 @@ async function run() {
     }
 
     for (let i = 0; i < count; i++) {
+        let pullResponse
         try {
-            const pullResponse = await http.post("http://localhost:3000/meghduta/queue/pull", {
+            pullResponse = await http.post("http://localhost:3000/meghduta/queue/pull", {
                 "queue": "my_queue"
             })
         } catch (err) {
