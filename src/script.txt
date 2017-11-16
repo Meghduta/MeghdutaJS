@@ -1,4 +1,4 @@
 
-seq 1 100000 | xargs -n 1 -P 5 curl -H "Content-Type: application/json" -X POST -d '{ "message" : "Hola", "queue": "my_queue" }' http://192.168.1.102:3000/meghduta/queue/push  
+seq 1 100000 | xargs -n 1 -P 5 curl -H "Content-Type: application/json" -X POST -d '{ "message" : "Hola", "queue": "my_queue" }' http://localhost:3000/meghduta/queue/push  
 
-seq 1 10000 | xargs -n 1 -P 5 curl -H "Content-Type: application/json" -X POST -d '{ "queue" : "my_queue" }' http://192.168.1.102:3000/meghduta/queue/pull  
+seq 1 10000 | xargs -n 1 -P 5 curl -H "Content-Type: application/json" -X POST -d '{ "queue" : "my_queue" }' http://localhost:3000/meghduta/queue/pull  

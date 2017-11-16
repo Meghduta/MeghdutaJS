@@ -14,6 +14,18 @@ const {
 const store = require("./store")
 const Queue = require("./queue")
 
+function validateRequest(schema, request, response) {
+    const result = validate(schema, request.body)
+    if (result !== true) {
+        response.writeHead(400, {
+            "Content-Type": "application/json"
+        })
+        response.end(JSON.stringify(result))
+        return false
+    }
+    return true
+}
+
 const QueuePullSchema = object({
     queue: all([string, minLength(3), maxLength(20)])
 })
@@ -22,14 +34,9 @@ const noMessagesToPull = JSON.stringify({
 })
 
 function handleQueuePull(request, response) {
-    const result = validate(QueuePullSchema, request.body)
-    if (result !== true) {
-        response.writeHead(400, {
-            "Content-Type": "application/json"
-        })
-        response.end(JSON.stringify(result))
+    if (!validateRequest(QueuePullSchema, request, response))
         return
-    }
+
     const queue = request.body
     const message = store.queues[queue.queue] ? store.queues[queue.queue].pull() : null
     if (message) {
@@ -38,12 +45,11 @@ function handleQueuePull(request, response) {
         }))
     } else {
         response.writeHead(400, {
-            "Content-Type": "text/plain"
+            "Content-Type": "application/json"
         })
         response.end(noMessagesToPull)
     }
 }
-
 
 const QueuePushSchema = object({
     queue: all([string, minLength(3), maxLength(20)]),
@@ -51,14 +57,9 @@ const QueuePushSchema = object({
 })
 
 function handleQueuePush(request, response) {
-    const result = validate(QueuePushSchema, request.body)
-    if (result !== true) {
-        response.writeHead(400, {
-            "Content-Type": "application/json"
-        })
-        response.end(JSON.stringify(result))
+    if (!validateRequest(QueuePushSchema, request, response))
         return
-    }
+
     const message = request.body
     store.queues[message.queue] = store.queues[message.queue] || new Queue()
     store.queues[message.queue].push(message.message)
