@@ -12,7 +12,9 @@
   "author": "Piyush Katariya",
   "license": "ISC",
   "dependencies": {
-    "fn-validator": "1.1.0"
+    "fn-validator": "1.1.0",
+    "raw-body": "2.3.2",
+    "ws": "3.3.1"
   },
   "devDependencies": {
     "axios": "0.17.1"

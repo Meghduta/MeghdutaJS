@@ -45,3 +45,35 @@ server.listen(port, (err) => {
     }
     console.log(`server is listening on ${port}`)
 })
+
+const wssServer = require("ws").Server
+const wss = new wssServer({
+    port: 3001
+})
+
+wss.on('connection', function connection(ws) {
+    ws.on('message', function incoming(msg) {
+        const command = /^([SP]UB) ([A-Z_]{3,20}) (.{1,262144})$/.exec(msg)
+        if (!command) {
+            return
+        }
+        const [action, topic, message] = command
+        switch (action) {
+            case "PUB":
+                wss.clients.forEach(function each(client) {
+                    if (client !== ws &&
+                        client.readyState === WebSocket.OPEN &&
+                        ws.topics && ws.topics.some((_topic) => topic === _topic)) {
+                        client.send(message)
+                    }
+                })
+                break
+            case "SUB":
+                ws.topics = ws.topics || []
+                ws.topics.push(topic)
+                break
+        }
+        console.log('received: %s', message);
+    })
+    ws.send('something')
+})
