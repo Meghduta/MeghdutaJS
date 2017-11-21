@@ -13,6 +13,7 @@ const {
 
 const store = require("./store")
 const Queue = require("./queue")
+const WebSocket = require('ws');
 
 function validateRequest(schema, request, response) {
     const result = validate(schema, request.body)
@@ -96,16 +97,19 @@ function handleTopicPush(request, response, wss) {
 
 function handleWebSocketRequests(wss) {
     wss.on('connection', function connection(ws) {
-
         ws.on('message', function incoming(msg) {
             const command = /^([SP]UB) ([A-Z_]{3,20}) (.{1,262144})$/.exec(msg)
             if (!command) {
                 return
             }
-            const [action, topic, message] = command
+            const [action, topic, message] = command.slice(1)
             switch (action) {
                 case "PUB":
                     wss.clients.forEach(function each(client) {
+                        // console.log(client !== ws)
+                        // console.log(client.readyState === WebSocket.OPEN)
+                        // console.log(ws.topics)
+                        // console.log(ws.topics.some((_topic) => topic === _topic))
                         if (client !== ws &&
                             client.readyState === WebSocket.OPEN &&
                             ws.topics && ws.topics.some((_topic) => topic === _topic)) {

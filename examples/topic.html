@@ -1,0 +1,79 @@
+<html>
+
+<head>
+
+    <title>MeghdutaJS Topic Publish Subscribe </title>
+</head>
+
+<body>
+    Open dev tools and see console.
+
+    <script>
+        // publisher
+        const publisher = new WebSocket("ws://localhost:6610/meghduta")
+        publisher.onopen = function () {
+            // Web Socket is connected, 
+
+            // subscribe to TOPIC to which you sending messages but will never receive it
+            publisher.send("SUB MY_TOPIC temp", function (err) {
+                console.error(err)
+            })
+            console.log(" PUBLISHER subscribed to topic")
+
+            // publish messages after a short period, so that subscriber connection has been established
+
+            setTimeout(function () {
+                for (let i = 0; i < 10; i++) {
+                    publisher.send("PUB MY_TOPIC message" + i)
+                    console.log("Message sent =", i)
+                }
+            }, 100)
+
+
+        };
+
+        publisher.onerror = function (event) {
+            console.error(event)
+        }
+
+        publisher.onmessage = function (evt) {
+            const received_msg = evt.data
+            console.log("PUBLISHER message received", evt)
+        };
+
+        publisher.onclose = function () {
+            // websocket is closed.
+            console.log("PUBLISHER Connection is closed...")
+        };
+
+
+        // subscriber 
+
+        const subscriber = new WebSocket("ws://localhost:6610/meghduta")
+        subscriber.onopen = function () {
+            // Web Socket is connected, 
+
+            // subscribe to TOPIC
+            subscriber.send("SUB MY_TOPIC temp", function (err) {
+                console.error(err)
+            })
+            console.log("SUBSCRIBER subscribed to topic")
+        };
+
+        subscriber.onerror = function (event) {
+            console.error("SUBSCRIBER", event)
+        }
+
+        subscriber.onmessage = function (evt) {
+            const received_msg = evt.data
+            console.log(" SUBSCRIBER message received", evt)
+        };
+
+        subscriber.onclose = function () {
+            // websocket is closed.
+            console.log("SUBSCRIBER Connection is closed...")
+        };
+    </script>
+</body>
+
+</html>
