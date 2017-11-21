@@ -1,9 +1,10 @@
 const http = require("http")
 const {
     handleQueuePush,
-    handleQueuePull
+    handleQueuePull,
+    handleTopicPush,
+    handleWebSocketRequests
 } = require("./src/handler")
-const port = 3000
 
 const requestHandler = (request, response) => {
     if (request.method !== "POST") {
@@ -31,6 +32,9 @@ const requestHandler = (request, response) => {
                 case "/meghduta/queue/pull":
                     handleQueuePull(request, response)
                     break
+                case "/meghduta/topic/push":
+                    handleTopicPush(request, response, wss)
+                    break
                 default:
                     response.end("Invalid API or command")
             }
@@ -39,41 +43,21 @@ const requestHandler = (request, response) => {
 
 const server = http.createServer(requestHandler)
 
-server.listen(port, (err) => {
+server.listen(6600, (err) => {
     if (err) {
         return console.log('something bad happened', err)
     }
-    console.log(`server is listening on ${port}`)
+    console.log(`server is listening on 6600`)
 })
 
 const wssServer = require("ws").Server
 const wss = new wssServer({
-    port: 3001
+    port: 6610
+}, function (err) {
+    if (err) {
+        return console.log('something bad happened', err)
+    }
+    console.log(`websocket server is listening on 6610`)
 })
 
-wss.on('connection', function connection(ws) {
-    ws.on('message', function incoming(msg) {
-        const command = /^([SP]UB) ([A-Z_]{3,20}) (.{1,262144})$/.exec(msg)
-        if (!command) {
-            return
-        }
-        const [action, topic, message] = command
-        switch (action) {
-            case "PUB":
-                wss.clients.forEach(function each(client) {
-                    if (client !== ws &&
-                        client.readyState === WebSocket.OPEN &&
-                        ws.topics && ws.topics.some((_topic) => topic === _topic)) {
-                        client.send(message)
-                    }
-                })
-                break
-            case "SUB":
-                ws.topics = ws.topics || []
-                ws.topics.push(topic)
-                break
-        }
-        console.log('received: %s', message);
-    })
-    ws.send('something')
-})
+handleWebSocketRequests(wss)

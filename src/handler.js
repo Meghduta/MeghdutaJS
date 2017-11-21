@@ -37,8 +37,10 @@ function handleQueuePull(request, response) {
     if (!validateRequest(QueuePullSchema, request, response))
         return
 
-    const queue = request.body
-    const message = store.queues[queue.queue] ? store.queues[queue.queue].pull() : null
+    const {
+        queue
+    } = request.body
+    const message = store.queues[queue] ? store.queues[queue].pull() : null
     if (message) {
         response.end(JSON.stringify({
             message
@@ -60,13 +62,69 @@ function handleQueuePush(request, response) {
     if (!validateRequest(QueuePushSchema, request, response))
         return
 
-    const message = request.body
-    store.queues[message.queue] = store.queues[message.queue] || new Queue()
-    store.queues[message.queue].push(message.message)
+    const {
+        queue,
+        message
+    } = request.body
+    store.queues[queue] = store.queues[queue] || new Queue()
+    store.queues[queue].push(message)
     response.end("Message Queued")
+}
+
+const TopicPushSchema = object({
+    topic: all([string, minLength(3), maxLength(20)]),
+    message: all([string, minLength(1), maxLength(256 * 1024)])
+})
+
+function handleTopicPush(request, response, wss) {
+    if (!validateRequest(TopicPushSchema, request, response))
+        return
+
+    const {
+        topic,
+        message
+    } = request.body
+    wss.clients.forEach(function each(client) {
+        if (client !== ws &&
+            client.readyState === WebSocket.OPEN &&
+            ws.topics && ws.topics.some((_topic) => topic === _topic)) {
+            client.send(message)
+        }
+    })
+    response.end("Message Published")
+}
+
+function handleWebSocketRequests(wss) {
+    wss.on('connection', function connection(ws) {
+
+        ws.on('message', function incoming(msg) {
+            const command = /^([SP]UB) ([A-Z_]{3,20}) (.{1,262144})$/.exec(msg)
+            if (!command) {
+                return
+            }
+            const [action, topic, message] = command
+            switch (action) {
+                case "PUB":
+                    wss.clients.forEach(function each(client) {
+                        if (client !== ws &&
+                            client.readyState === WebSocket.OPEN &&
+                            ws.topics && ws.topics.some((_topic) => topic === _topic)) {
+                            client.send(message)
+                        }
+                    })
+                    break
+                case "SUB":
+                    ws.topics = ws.topics || []
+                    ws.topics.push(topic)
+                    break
+            }
+        })
+    })
 }
 
 module.exports = {
     handleQueuePull,
-    handleQueuePush
+    handleQueuePush,
+    handleTopicPush,
+    handleWebSocketRequests
 }

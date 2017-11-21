@@ -3,9 +3,9 @@ const http = require('axios')
 const count = 1000
 
 async function run() {
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count; i++) { // push messages
         try {
-            const pushResponse = await http.post("http://localhost:3000/meghduta/queue/push", {
+            const pushResponse = await http.post("http://localhost:6600/meghduta/queue/push", {
                 "message": "Hola",
                 "queue": "my_queue"
             })
@@ -15,10 +15,10 @@ async function run() {
         console.log("PUSH success")
     }
 
-    for (let i = 0; i < count; i++) {
+    for (let i = 0; i < count; i++) { // pull messages
         let pullResponse
         try {
-            pullResponse = await http.post("http://localhost:3000/meghduta/queue/pull", {
+            pullResponse = await http.post("http://localhost:6600/meghduta/queue/pull", {
                 "queue": "my_queue"
             })
         } catch (err) {
