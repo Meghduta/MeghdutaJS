@@ -3,6 +3,7 @@
 <head>
 
     <title>MeghdutaJS Topic Publish Subscribe </title>
+    <script src="../node_modules/axios/dist/axios.min.js"></script>
 </head>
 
 <body>
@@ -73,6 +74,16 @@
             // websocket is closed.
             console.log("SUBSCRIBER Connection is closed...")
         };
+
+        setTimeout(function sendHTTPPushRequest() {
+            for (var i = 0; i < 100; i++) {
+                axios.post("http://localhost:6600/meghduta/topic/push", {
+                    topic: "MY_TOPIC",
+                    message: "http message" + i
+                })
+            }
+
+        }, 1000)
     </script>
 </body>
 

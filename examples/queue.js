@@ -1,6 +1,6 @@
 const http = require('axios')
 
-const count = 1000
+const count = 100
 
 async function run() {
     for (let i = 0; i < count; i++) { // push messages
