@@ -15,7 +15,7 @@
             // Web Socket is connected, 
 
             // subscribe to TOPIC to which you sending messages but will never receive it
-            publisher.send("SUB MY_TOPIC temp", function (err) {
+            publisher.send("SUB MY_TOPIC", function (err) {
                 console.error(err)
             })
             console.log(" PUBLISHER subscribed to topic")
@@ -23,7 +23,7 @@
             // publish messages after a short period, so that subscriber connection has been established
 
             setTimeout(function () {
-                for (let i = 0; i < 10; i++) {
+                for (let i = 0; i < 100; i++) {
                     publisher.send("PUB MY_TOPIC message" + i)
                     console.log("Message sent =", i)
                 }
@@ -54,7 +54,7 @@
             // Web Socket is connected, 
 
             // subscribe to TOPIC
-            subscriber.send("SUB MY_TOPIC temp", function (err) {
+            subscriber.send("SUB MY_TOPIC", function (err) {
                 console.error(err)
             })
             console.log("SUBSCRIBER subscribed to topic")

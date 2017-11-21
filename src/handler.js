@@ -98,11 +98,11 @@ function handleTopicPush(request, response, wss) {
 function handleWebSocketRequests(wss) {
     wss.on('connection', function connection(ws) {
         ws.on('message', function incoming(msg) {
-            const command = /^([SP]UB) ([A-Z_]{3,20}) (.{1,262144})$/.exec(msg)
+            const command = /^(?:(PUB) ([A-Z_]{3,20}) (.{1,262144})|(SUB) ([A-Z_]{3,20}))$/.exec(msg)
             if (!command) {
                 return
             }
-            const [action, topic, message] = command.slice(1)
+            const [action, topic, message] = command.filter((el) => el).slice(1)
             switch (action) {
                 case "PUB":
                     wss.clients.forEach(function each(client) {
