@@ -12,13 +12,13 @@ Meghduta is distributed in memory messaging service written in NodeJS. [Meghduta
 
 ## API
 
-Target| Method | URL                 | Request                                                        | Response
-------|--------|---------------------|----------------------------------------------------------------|----------------------|
-Queue | HTTP POST |/meghduta/queue/push | { "queue" : "MY_QUEUE", "message" : "First message to be queued" }| 'Message queued'
-Queue | HTTP POST |/meghduta/queue/pull | { "queue" : "MY_QUEUE" }           | { "message : "First message to be queued" } |
-Topic | HTTP POST |/meghduta/topic/push | { "topic" : "MY_TOPIC", "message" "First message to be published" } | 'Message published'
-Topic | WS Send | /meghduta/topic | 'PUB MY_TOPIC Second message to be published' |
-Topic | WS Send | /meghduta/topic | 'SUB MY_TOPIC' |
+Target| Method | Port | URL           | Request                                                        | Response
+------|--------|------|---------------|----------------------------------------------------------------|---------------------|
+Queue | HTTP POST | 6600 | /meghduta/queue/push | { "queue" : "MY_QUEUE", "message" : "First message to be queued" }| 'Message queued'
+Queue | HTTP POST | 6600 | /meghduta/queue/pull | { "queue" : "MY_QUEUE" }           | { "message : "First message to be queued" } |
+Topic | HTTP POST | 6600 |/meghduta/topic/push | { "topic" : "MY_TOPIC", "message" "First message to be published" } | 'Message published'
+Topic | WS Send | 6610 |/meghduta/topic | 'PUB MY_TOPIC Second message to be published' |
+Topic | WS Send | 6610 |/meghduta/topic | 'SUB MY_TOPIC' |
 
 
 
