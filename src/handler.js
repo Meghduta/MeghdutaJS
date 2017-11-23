@@ -86,9 +86,8 @@ function handleTopicPush(request, response, wss) {
         message
     } = request.body
     wss.clients.forEach(function each(client) {
-        if (client !== ws &&
-            client.readyState === WebSocket.OPEN &&
-            ws.topics && ws.topics.some((_topic) => topic === _topic)) {
+        if (client.readyState === WebSocket.OPEN &&
+            client.topics && client.topics.some((_topic) => topic === _topic)) {
             client.send(message)
         }
     })
@@ -108,8 +107,7 @@ function handleWebSocketRequests(wss) {
                     wss.clients.forEach(function each(client) {
                         // console.log(client !== ws)
                         // console.log(client.readyState === WebSocket.OPEN)
-                        // console.log(ws.topics)
-                        // console.log(ws.topics.some((_topic) => topic === _topic))
+                        // console.log(ws.topics && ws.topics.some((_topic) => topic === _topic))
                         if (client !== ws &&
                             client.readyState === WebSocket.OPEN &&
                             ws.topics && ws.topics.some((_topic) => topic === _topic)) {
@@ -118,6 +116,8 @@ function handleWebSocketRequests(wss) {
                     })
                     break
                 case "SUB":
+                    // console.log(" subscribed")
+                    // console.log(topic)
                     ws.topics = ws.topics || []
                     ws.topics.push(topic)
                     break

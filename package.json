@@ -1,16 +1,28 @@
 {
   "name": "meghduta.js",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Distributed Queue and Topic service",
   "main": "app.js",
   "scripts": {
     "test": "jasmine"
   },
   "keywords": [
-    "message_queue"
+    "message queue", "topic", "pub sub"
   ],
-  "author": "Piyush Katariya",
-  "license": "ISC",
+  "engines": {
+    "node": ">=8.9.1"
+  },
+  "engineStrict": true,
+  "preferGlobal": true,
+  "bin": {
+    "meghduta": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Meghduta/MeghdutaJS.git"
+  },
+  "author": "Piyush Katariya, corporate.piyush@gmail.com",
+  "license": "Apache License 2.0",
   "dependencies": {
     "fn-validator": "1.1.0",
     "raw-body": "2.3.2",

@@ -7,7 +7,13 @@ const {
 } = require("./src/handler")
 
 const requestHandler = (request, response) => {
-    if (request.method !== "POST") {
+    if (request.method === "OPTIONS") {
+        response.setHeader('Access-Control-Allow-Origin', '*')
+        response.setHeader('Access-Control-Allow-Methods', 'POST')
+        response.setHeader('Access-Control-Allow-Headers', 'content-type')
+        response.end()
+        return
+    } else if (request.method !== "POST") {
         response.end("Use POST request method with JSON as content type")
         return
     }
