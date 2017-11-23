@@ -11,7 +11,7 @@
 
     <script>
         // publisher
-        const publisher = new WebSocket("ws://localhost:6610/meghduta")
+        const publisher = new WebSocket("ws://localhost:6610/meghduta/topic")
         publisher.onopen = function () {
             // Web Socket is connected, 
 
@@ -50,7 +50,7 @@
 
         // subscriber 
 
-        const subscriber = new WebSocket("ws://localhost:6610/meghduta")
+        const subscriber = new WebSocket("ws://localhost:6610/meghduta/topic")
         subscriber.onopen = function () {
             // Web Socket is connected, 
 

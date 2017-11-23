@@ -137,7 +137,11 @@ const requestHandler = (wss) => (request, response) => {
 }
 
 function handleWebSocketRequests(wss) {
-    wss.on('connection', function connection(ws) {
+    wss.on('connection', function connection(ws, request) {
+        if (request.url.slice(-15) !== "/meghduta/topic") {
+            ws.close()
+            return
+        }
         ws.on('message', function incoming(msg) {
             const command = /^(?:(PUB) ([A-Z_]{3,20}) (.{1,262144})|(SUB) ([A-Z_]{3,20}))$/.exec(msg)
             if (!command) {
