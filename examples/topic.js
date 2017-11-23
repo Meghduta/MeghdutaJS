@@ -1,7 +1,7 @@
 'use strict'
 
 const WebSocket = require('ws')
-const subscriber = new WebSocket('ws://localhost:6610/meghduta')
+const subscriber = new WebSocket('ws://localhost:6610/meghduta/topic')
 
 
 function printError(err) {
@@ -26,7 +26,7 @@ subscriber.on('error', function (event) {
 })
 
 
-const publisher = new WebSocket('ws://localhost:6610/meghduta')
+const publisher = new WebSocket('ws://localhost:6610/meghduta/topic')
 
 publisher.on('open', function open() {
     setTimeout(function () {
