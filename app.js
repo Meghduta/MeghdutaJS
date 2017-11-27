@@ -4,22 +4,27 @@ const {
     handleWebSocketRequests
 } = require("./src/handler")
 
-const wssServer = require("ws").Server
-const wss = new wssServer({
-    port: 6610
-}, function (err) {
-    if (err) {
-        return console.log('something bad happened', err)
-    }
-    console.log(`websocket server is listening on 6610`)
-})
-handleWebSocketRequests(wss)
+function start(httpPort = 6600, websocketPort = 6610) {
+    const wssServer = require("ws").Server
+    const wss = new wssServer({
+        port: websocketPort
+    }, function (err) {
+        if (err) {
+            return console.log('something bad happened', err)
+        }
+        console.log(`Meghduta websocket server is listening on ${websocketPort}`)
+    })
+    handleWebSocketRequests(wss)
 
+    const server = http.createServer(requestHandler(wss))
+    server.listen(httpPort, (err) => {
+        if (err) {
+            return console.log('something bad happened', err)
+        }
+        console.log(`Meghduta http server is listening on ${httpPort}`)
+    })
+}
 
-const server = http.createServer(requestHandler(wss))
-server.listen(6600, (err) => {
-    if (err) {
-        return console.log('something bad happened', err)
-    }
-    console.log(`server is listening on 6600`)
-})
+module.exports = {
+    start
+}
