@@ -10,6 +10,13 @@ Meghduta is distributed in memory messaging service written in NodeJS. [Meghduta
 - [ ] Replication for failover and scalability
 - [ ] Auto SSL
 
+## Usage
+`>> npm install -g meghduta`
+
+`>> meghduta `
+
+see `examples` directory 
+
 
 ## API
 
