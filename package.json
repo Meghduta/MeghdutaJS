@@ -1,5 +1,5 @@
 {
-  "name": "meghduta.js",
+  "name": "meghduta",
   "version": "1.0.0",
   "description": "Distributed Queue and Topic service",
   "main": "app.js",
@@ -17,7 +17,7 @@
   "engineStrict": true,
   "preferGlobal": true,
   "bin": {
-    "meghduta": "node app.js"
+    "meghduta": "node bin/start.js"
   },
   "repository": {
     "type": "git",
@@ -27,7 +27,6 @@
   "license": "Apache License 2.0",
   "dependencies": {
     "fn-validator": "1.1.0",
-    "raw-body": "2.3.2",
     "ws": "3.3.1"
   },
   "devDependencies": {
