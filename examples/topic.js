@@ -13,7 +13,7 @@ async function run() {
         } catch (err) {
             console.error(err)
         }
-        console.log("PUSH success")
+        console.log("PUBLISH success")
     }
 }
 
