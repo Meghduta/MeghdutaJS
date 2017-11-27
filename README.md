@@ -8,6 +8,7 @@ Meghduta is distributed in memory messaging service written in NodeJS. [Meghduta
 - [X] Simple HTTP API for Queue operations (PUSH, PULL) and Topic operation (PUB)
 - [X] Websocket API for Topic operations (PUB, SUB)
 - [ ] Replication for failover and scalability
+- [ ] Auto SSL
 
 
 ## API
