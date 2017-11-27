@@ -77,7 +77,7 @@ const TopicPushSchema = object({
     message: all([string, minLength(1), maxLength(256 * 1024)])
 })
 
-function handleTopicPush(request, response, wss) {
+function handleTopicPublish(request, response, wss) {
     if (!validateRequest(TopicPushSchema, request, response))
         return
 
@@ -95,10 +95,10 @@ function handleTopicPush(request, response, wss) {
 }
 
 const requestHandler = (wss) => (request, response) => {
+    response.setHeader('Access-Control-Allow-Origin', '*')
+    response.setHeader('Access-Control-Allow-Methods', 'POST')
+    response.setHeader('Access-Control-Allow-Headers', 'content-type')
     if (request.method === "OPTIONS") {
-        response.setHeader('Access-Control-Allow-Origin', '*')
-        response.setHeader('Access-Control-Allow-Methods', 'POST')
-        response.setHeader('Access-Control-Allow-Headers', 'content-type')
         response.end()
         return
     } else if (request.method !== "POST") {
@@ -126,8 +126,8 @@ const requestHandler = (wss) => (request, response) => {
                     case "/meghduta/queue/pull":
                         handleQueuePull(request, response)
                         break
-                    case "/meghduta/topic/push":
-                        handleTopicPush(request, response, wss)
+                    case "/meghduta/topic/publish":
+                        handleTopicPublish(request, response, wss)
                         break
                     default:
                         response.end("Invalid API or command")
