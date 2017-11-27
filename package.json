@@ -17,7 +17,7 @@
   "engineStrict": true,
   "preferGlobal": true,
   "bin": {
-    "meghduta": "node ./bin/start.js"
+    "meghduta": "./bin/start.js"
   },
   "repository": {
     "type": "git",
