@@ -1,9 +1,10 @@
 {
   "name": "meghduta",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Distributed Queue and Topic service",
   "main": "app.js",
   "scripts": {
+    "start": "node bin/start.js",
     "test": "jasmine"
   },
   "keywords": [

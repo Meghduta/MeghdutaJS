@@ -137,11 +137,16 @@ const requestHandler = (wss) => (request, response) => {
 }
 
 function handleWebSocketRequests(wss) {
+
     wss.on('connection', function connection(ws, request) {
         if (request.url.slice(-15) !== "/meghduta/topic") {
             ws.close()
             return
         }
+        ws.isAlive = true
+        ws.on('pong', function heartbeat() {
+            this.isAlive = true
+        })
         ws.on('message', function incoming(msg) {
             const command = /^(?:(PUB) ([A-Z_]{3,20}) (.{1,262144})|(SUB) ([A-Z_]{3,20}))$/.exec(msg)
             if (!command) {
@@ -165,6 +170,15 @@ function handleWebSocketRequests(wss) {
             }
         })
     })
+
+    const interval = setInterval(function ping() {
+        wss.clients.forEach(function each(ws) {
+            if (ws.isAlive === false)
+                return ws.terminate()
+            ws.isAlive = false
+            ws.ping('', false, true)
+        });
+    }, 30000)
 }
 
 module.exports = {
