@@ -23,6 +23,9 @@ function start(httpPort = 6600, websocketPort = 6610) {
         }
         console.log(`Meghduta http server is listening on ${httpPort}`)
     })
+    server.on('connection', function (socket) {
+        socket.setKeepAlive(true)
+    })
 }
 
 module.exports = {
