@@ -18,7 +18,8 @@
   "engineStrict": true,
   "preferGlobal": true,
   "bin": {
-    "meghduta": "./bin/start.js"
+    "meghduta": "./bin/start.js",
+    "meghduta-shared": "./bin/startShared.js"
   },
   "repository": {
     "type": "git",
@@ -28,13 +29,20 @@
   "license": "Apache License 2.0",
   "dependencies": {
     "fn-validator": "1.1.0",
-    "ws": "3.3.1"
-  },
-  "devDependencies": {
+    "optimist": "0.6.1",
+    "ws": "3.3.1",
     "axios": "0.17.1"
   },
   "optionalDependencies": {
     "bufferutil": "3.0.3",
     "utf-8-validate": "3.0.4"
+  },
+  "devDependencies": {
+    "eslint": "^4.13.1",
+    "eslint-config-standard": "^11.0.0-beta.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1"
   }
 }

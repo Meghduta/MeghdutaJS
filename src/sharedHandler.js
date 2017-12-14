@@ -1,6 +1,7 @@
 const store = require('./store')
 const Queue = require('./queue')
 const WebSocket = require('ws')
+const http = require('http')
 const {
     ContentTypeHeader,
     validateRequest,
@@ -11,7 +12,13 @@ const {
     getRequestData
 } = require('./common')
 
-async function handleQueuePull(request, response) {
+const axios = require('axios').create({
+    httpAgent: new http.Agent({
+        keepAlive: true
+    })
+})
+
+async function handleQueuePull(request, response, servers = []) {
     if (!validateRequest(QueuePullSchema, request, response))
         return
 
@@ -24,6 +31,23 @@ async function handleQueuePull(request, response) {
             message
         }))
     } else {
+        let message = null
+        for (let i = 0; i < servers.length; i++) {
+            try {
+                const pullResponse = await axios.post(`${servers[i]}/meghduta/queue/pull`, {
+                    queue
+                })
+                message = pullResponse.data.message
+                if (message) {
+                    response.end(JSON.stringify({
+                        message
+                    }))
+                    return
+                }
+            } catch (error) {
+                console.error('Error while pulling from shared servers', error)
+            }
+        }
         response.writeHead(400, ContentTypeHeader)
         response.end(noMessagesToPull)
     }
@@ -59,7 +83,7 @@ function handleTopicPublish(request, response, wss) {
     response.end('Message Published')
 }
 
-const requestHandler = (wss) => async(request, response) => {
+const requestHandler = (wss, servers = []) => async(request, response) => {
     response.setHeader('Access-Control-Allow-Origin', '*')
     response.setHeader('Access-Control-Allow-Methods', 'POST')
     response.setHeader('Access-Control-Allow-Headers', 'content-type')
@@ -83,7 +107,7 @@ const requestHandler = (wss) => async(request, response) => {
                 handleQueuePush(request, response)
                 break
             case '/meghduta/queue/pull':
-                handleQueuePull(request, response)
+                handleQueuePull(request, response, servers)
                 break
             case '/meghduta/topic/publish':
                 handleTopicPublish(request, response, wss)
@@ -94,7 +118,7 @@ const requestHandler = (wss) => async(request, response) => {
     }
 }
 
-function handleWebSocketRequests(wss) {
+function handleWebSocketRequests(wss, sharedServerUrls = []) {
     const commandRegex = /^(?:(PUB) ([A-Z_]{3,20}) (.{1,262144})|(SUB) ([A-Z_]{3,20}))$/
     const urlPrefix = '/meghduta/topic'
     const identity = (id) => id
@@ -122,6 +146,12 @@ function handleWebSocketRequests(wss) {
                             ws.topics && ws.topics.some((_topic) => topic === _topic)) {
                             client.send(message)
                         }
+                    })
+                    sharedServerUrls.forEach(function sendPublicationNoticeToAllSharedServers(url) {
+                        axios.post(url, {
+                            message,
+                            topic
+                        })
                     })
                     break
                 case 'SUB':
