@@ -17,7 +17,7 @@ const QueuePullSchema = object({
 })
 
 const noMessagesToPull = JSON.stringify({
-    message: 'No messages to pull'
+    message: null
 })
 
 const QueuePushSchema = object({

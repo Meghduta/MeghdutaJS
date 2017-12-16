@@ -19,7 +19,7 @@ async function run() {
     for (let i = 0; i < count; i++) { // push messages
         try {
             const pushResponse = await axios.post(`http://localhost:${argv.httpPort}/meghduta/topic/publish`, {
-                'message': 'Hola',
+                'message': `Hola${i}`,
                 'topic': 'MY_TOPIC'
             })
         } catch (err) {

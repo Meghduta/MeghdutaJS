@@ -34,7 +34,7 @@ async function handleQueuePull(request, response, servers = []) {
         let message = null
         for (let i = 0; i < servers.length; i++) {
             try {
-                const pullResponse = await axios.post(`${servers[i]}/meghduta/queue/pull`, {
+                const pullResponse = await axios.post(servers[i], {
                     queue
                 })
                 message = pullResponse.data.message
@@ -48,7 +48,6 @@ async function handleQueuePull(request, response, servers = []) {
                 console.error('Error while pulling from shared servers', error)
             }
         }
-        response.writeHead(400, ContentTypeHeader)
         response.end(noMessagesToPull)
     }
 }
@@ -66,7 +65,7 @@ function handleQueuePush(request, response) {
     response.end('Message Queued')
 }
 
-function handleTopicPublish(request, response, wss) {
+function handleTopicPublish(request, response, wss, sharedServerUrls) {
     if (!validateRequest(TopicPushSchema, request, response))
         return
 
@@ -79,6 +78,12 @@ function handleTopicPublish(request, response, wss) {
             client.topics && client.topics.some((_topic) => topic === _topic)) {
             client.send(message)
         }
+    })
+    sharedServerUrls.forEach(function sendPublicationNoticeToAllSharedServers(url) {
+        axios.post(url, {
+            message,
+            topic
+        })
     })
     response.end('Message Published')
 }
@@ -107,24 +112,33 @@ const requestHandler = (wss, servers = []) => async(request, response) => {
                 handleQueuePush(request, response)
                 break
             case '/meghduta/queue/pull':
-                handleQueuePull(request, response, servers)
+                handleQueuePull(request, response, servers.map((url) => `${url}/meghduta/queue/pull/once`))
+                break
+            case '/meghduta/queue/pull/once':
+                handleQueuePull(request, response, [])
                 break
             case '/meghduta/topic/publish':
-                handleTopicPublish(request, response, wss)
+                handleTopicPublish(request, response, wss, servers.map((url) => `${url}/meghduta/topic/publish/once`))
+                break
+            case '/meghduta/topic/publish/once':
+                handleTopicPublish(request, response, wss, [])
                 break
             default:
+                response.writeHead(404, ContentTypeHeader)
                 response.end('Invalid API or command')
         }
     }
 }
 
-function handleWebSocketRequests(wss, sharedServerUrls = []) {
+function handleWebSocketRequests(wss, servers = []) {
     const commandRegex = /^(?:(PUB) ([A-Z_]{3,20}) (.{1,262144})|(SUB) ([A-Z_]{3,20}))$/
     const urlPrefix = '/meghduta/topic'
     const identity = (id) => id
+    const sharedServerUrls = servers.map((url) => `${url}${urlPrefix}/publish/once`)
 
     wss.on('connection', function connection(ws, request) {
         if (request.url.slice(-15) !== urlPrefix) {
+            ws.send('Invalid URL')
             ws.close()
             return
         }

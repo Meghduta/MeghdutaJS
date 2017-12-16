@@ -1,6 +1,6 @@
 {
   "name": "meghduta",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "description": "Distributed Queue and Topic service",
   "main": "app.js",
   "scripts": {
@@ -32,10 +32,6 @@
     "optimist": "0.6.1",
     "ws": "3.3.1",
     "axios": "0.17.1"
-  },
-  "optionalDependencies": {
-    "bufferutil": "3.0.3",
-    "utf-8-validate": "3.0.4"
   },
   "devDependencies": {
     "eslint": "^4.13.1",

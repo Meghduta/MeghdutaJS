@@ -24,7 +24,6 @@ async function handleQueuePull(request, response) {
             message
         }))
     } else {
-        response.writeHead(400, ContentTypeHeader)
         response.end(noMessagesToPull)
     }
 }
@@ -89,6 +88,7 @@ const requestHandler = (wss) => async(request, response) => {
                 handleTopicPublish(request, response, wss)
                 break
             default:
+                response.writeHead(404, ContentTypeHeader)
                 response.end('Invalid API or command')
         }
     }

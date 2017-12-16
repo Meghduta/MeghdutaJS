@@ -11,6 +11,8 @@ function start(httpPort = 6600, websocketPort = 6610, strategy = 'STANDALONE', s
         console.log(`Meghduta websocket server is listening on ${websocketPort}`)
     })
 
+    console.log('Server Mode:', strategy)
+
     const {
         requestHandler,
         handleWebSocketRequests
