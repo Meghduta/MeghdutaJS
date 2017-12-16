@@ -2,7 +2,8 @@
 
 const argv = require('optimist')
     .default({
-        httpPort: 6600
+        httpPortPull: 6600,
+        httpPortPush: 6600
     })
     .argv
 
@@ -15,11 +16,14 @@ const axios = require('axios').create({
 
 const count = 1000
 
+console.log('Push to port', argv.httpPortPush)
+console.log('Pull from port', argv.httpPortPull)
+
 async function run() {
     console.time('Time Taken')
     for (let i = 0; i < count; i++) { // push messages
         try {
-            const pushResponse = await axios.post(`http://localhost:${argv.httpPort}/meghduta/queue/push`, {
+            const pushResponse = await axios.post(`http://localhost:${argv.httpPortPush}/meghduta/queue/push`, {
                 'message': 'Hola',
                 'queue': 'my_queue'
             })
@@ -32,7 +36,7 @@ async function run() {
     for (let i = 0; i < count; i++) { // pull messages
         let pullResponse = null
         try {
-            pullResponse = await axios.post(`http://localhost:${argv.httpPort}/meghduta/queue/pull`, {
+            pullResponse = await axios.post(`http://localhost:${argv.httpPortPull}/meghduta/queue/pull`, {
                 'queue': 'my_queue'
             })
         } catch (err) {
