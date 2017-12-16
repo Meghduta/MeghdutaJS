@@ -39,6 +39,15 @@ Is equivalent to
 `two.example.com >> meghduta-shared --httpPort 8080 --webSocketPort 8081 --servers http://one.example.com:6600`
 
 
+## Usage - SHARED Mode (more than 2 Servers)
+
+`>> meghduta-shared --servers http://localhost:8080,http://localhost:9090`
+
+`>> meghduta-shared --httpPort 8080 --webSocketPort 8081 --servers http://localhost:6600,http://localhost:9090`
+
+`>> meghduta-shared --httpPort 9090 --webSocketPort 9091 --servers http://localhost:8080,http://localhost:6600`
+
+
 ## API
 
 Target| Method | Port | URL           | Request                                                        | Response
