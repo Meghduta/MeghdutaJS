@@ -1,4 +1,4 @@
 {
-    "queue": "MY_QUEUE",
+    "queue": "my_queue",
     "message": "Meghduta - Distributed in memory queue"
 }

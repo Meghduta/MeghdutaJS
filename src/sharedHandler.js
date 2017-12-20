@@ -83,7 +83,7 @@ function handleTopicPublish(request, response, wss, sharedServerUrls) {
         axios.post(url, {
             message,
             topic
-        })
+        }).catch(console.error)
     })
     response.end('Message Published')
 }
@@ -165,7 +165,7 @@ function handleWebSocketRequests(wss, servers = []) {
                         axios.post(url, {
                             message,
                             topic
-                        })
+                        }).catch(console.error)
                     })
                     break
                 case 'SUB':
@@ -174,6 +174,7 @@ function handleWebSocketRequests(wss, servers = []) {
                     break
             }
         })
+        ws.ping('', false, true)
     })
 }
 

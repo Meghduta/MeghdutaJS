@@ -130,6 +130,7 @@ function handleWebSocketRequests(wss) {
                     break
             }
         })
+        ws.ping('', false, true)
     })
 }
 
