@@ -18,7 +18,7 @@ async function handleQueuePull(request, response) {
     const {
         queue
     } = request.body
-    const message = store.queues[queue] ? store.queues[queue].pull() : null
+    const message = await store.queues[queue] ? store.queues[queue].pull() : Promise.resolve(null)
     if (message) {
         response.end(JSON.stringify({
             message
@@ -58,7 +58,7 @@ function handleTopicPublish(request, response, wss) {
     response.end('Message Published')
 }
 
-const requestHandler = (wss) => async(request, response) => {
+const requestHandler = (wss) => async (request, response) => {
     response.setHeader('Access-Control-Allow-Origin', '*')
     response.setHeader('Access-Control-Allow-Methods', 'POST')
     response.setHeader('Access-Control-Allow-Headers', 'content-type')

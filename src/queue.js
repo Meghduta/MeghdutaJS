@@ -8,10 +8,11 @@ class Queue {
 
     push(value) {
         this.messages.push(value)
+        return Promise.resolve(null)
     }
 
     pull() {
-        return this.messages.shift()
+        return Promise.resolve(this.messages.shift())
     }
 
 }
